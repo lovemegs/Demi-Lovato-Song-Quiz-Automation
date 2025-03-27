@@ -1,7 +1,7 @@
-import { $ } from '@wdio/globals'
+import { $, browser } from '@wdio/globals'
 
-class songQuiz {
-   
+class SongQuiz {
+
 }
 
-export default new songQuiz();
+export default new SongQuiz();
