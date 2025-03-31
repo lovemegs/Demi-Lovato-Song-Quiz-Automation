@@ -9,5 +9,7 @@ describe('Demi Lovato Song Quiz', () => {
 
             await StartQuizPage.start();
             await QuizInfo.quizInfoBtns();
+
+            await SongQuiz.answerBtn();
         })
 })

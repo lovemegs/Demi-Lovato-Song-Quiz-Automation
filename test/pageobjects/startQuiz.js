@@ -9,7 +9,6 @@ class StartQuizPage extends HomePage {
     }
 
     async start () {
-        // await this.open();
         await this.startBtn.click();
         await expect(QuizInfo.startQuizBtn).toBeExisting();
     }

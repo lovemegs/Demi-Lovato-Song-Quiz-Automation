@@ -1,5 +1,4 @@
-import { $, browser } from '@wdio/globals'
-import { expect } from '@wdio/globals'
+import { $, expect } from '@wdio/globals'
 import StartQuizPage from './startQuiz';
 
 
@@ -16,17 +15,13 @@ class QuizInfo {
 
     async hoverState () {
         await this.cancelBtn.moveTo();
-        await browser.pause(3000);
         await this.startQuizBtn.moveTo();
-        await browser.pause(3000);
     }
     async cancel () {
         await this.cancelBtn.click();
-        await browser.pause(3000);
     }
     async startQuiz () {
         await this.startQuizBtn.click();
-        await browser.pause(3000);
     }
 
     async quizInfoBtns () {
