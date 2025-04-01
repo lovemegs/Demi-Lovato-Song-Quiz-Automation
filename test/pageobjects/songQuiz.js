@@ -22,6 +22,9 @@ class SongQuiz {
     get disabledBtns () {
         return $$('.disabled')
     }
+    get score () {
+        return $('span.score')
+    }
     get correctAnswers () {
         return [
             $('//button[contains(text(), "The Art Of Starting Over")]'),
@@ -53,7 +56,7 @@ class SongQuiz {
         }
     }
     
-    async answerBtnsClick () {
+    async correctAnswerBtns () {
         // await this.answerBtns[3].click();
         for (let i = 0; i < this.correctAnswers.length; i++) {
             if (await this.correctAnswers[i].isExisting()) {
@@ -79,13 +82,13 @@ class SongQuiz {
         }
     }
 
-    async loopThroughQuestions (numberOfQuestions) {
+    async loopThroughQuestionsPos (numberOfQuestions) {
         for (let i = 0; i < numberOfQuestions; i++) {
             await this.hoverOverBtns();
             for (let i = 0; i < this.hoverOverBtns.length; i++) {
                 await expect(this.hoverOverBtns[i]).toBeClickable();
             }
-            await this.answerBtnsClick();
+            await this.correctAnswerBtns();
             await expect(this.answerCorrect).toBeExisting();
             await expect(this.answerWrong).not.toBeExisting();
 
@@ -94,12 +97,12 @@ class SongQuiz {
 
             await this.next();
             await expect(QuizInfo.question).toBeExisting();
+            await expect(this.score).toBeExisting();
         }
     }
 
-
-    async answerBtn () {
-        await this.loopThroughQuestions(20);
+    async answerBtnPos () {
+        await this.loopThroughQuestionsPos(20);
     }
 }
 
