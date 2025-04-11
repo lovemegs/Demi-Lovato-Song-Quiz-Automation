@@ -1,4 +1,4 @@
-import { $, browser, expect } from '@wdio/globals'
+import { $, expect } from '@wdio/globals'
 import StartQuizPage from './startQuiz';
 
 
@@ -19,7 +19,6 @@ class QuizInfo {
     }
     async cancel () {
         await this.cancelBtn.click();
-        // await browser.pause(3000);
     }
     async startQuiz () {
         await this.startQuizBtn.click();

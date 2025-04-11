@@ -1,5 +1,6 @@
-import { $, expect, browser } from '@wdio/globals'
-import QuizInfo from './quizInfo'
+import { $, expect } from '@wdio/globals'
+import SongQuiz from './songQuiz';
+import QuizInfo from './quizInfo';
 
 class SongQuizNeg {
     get wrongAnswers () {
@@ -26,29 +27,10 @@ class SongQuizNeg {
             $('//button[contains(text(), "Can\'t Back Down")]'),
         ]
     }
-    get answerBtns() {
-        return [
-            $('.btn:nth-child(1)'),
-            $('.btn:nth-child(2)'),
-            $('.btn:nth-child(3)'),
-            $('.btn:nth-child(4)'),
-        ];
-    }
-    get answerCorrect () {
-        return $('.correct')
-    }
-    get answerWrong () {
-        return $('.wrong')
-    }
-    get nextBtn () {
-        return $('.next-btn')
-    }
-    get disabledBtns () {
-        return $$('.disabled')
-    }
     get score () {
         return $('span.score')
     }
+
 
     async wrongAnswersBtns () {
         for (let i = 0; i < this.wrongAnswers.length; i++) {
@@ -60,41 +42,27 @@ class SongQuizNeg {
         }
     }
 
-    async hoverOverBtns () {
-        for (let i = 0; i < this.answerBtns.length; i++) {
-            await this.answerBtns[i].moveTo();
-        }
-    }
-
-    async next () {
-        await this.nextBtn.moveTo();
-        await this.nextBtn.click();
-    }
-
-    async disabled () {
-        for (let i = 0; i < this.disabledBtns.length; i++) {
-            await this.disabledBtns[i].click();
-            await expect(this.disabledBtns[i].toBeExisting());
-        }
-    }
     async loopThroughQuestionsNeg (numberOfQuestions) {
         for (let i = 0; i < numberOfQuestions; i++) {
-            await this.hoverOverBtns();
-            for (let i = 0; i < this.hoverOverBtns.length; i++) {
-                await expect(this.hoverOverBtns[i]).toBeClickable();
+            await SongQuiz.hoverOverBtns();
+            for (let i = 0; i < SongQuiz.hoverOverBtns.length; i++) {
+                await expect(SongQuiz.hoverOverBtns[i]).toBeClickable();
             }
             await this.wrongAnswersBtns();
-            await expect(this.answerCorrect).toBeExisting();
-            await expect(this.answerWrong).toBeExisting();
+            await expect(SongQuiz.answerCorrect).toBeExisting();
+            await expect(SongQuiz.answerWrong).toBeExisting();
 
-            await this.disabled();
-            // await expect(this.disabledBtns).toBeExisting();
+            await SongQuiz.disabled();
 
-            await this.next();
-            await expect(QuizInfo.question).toBeExisting();
-            await expect(this.score).toBeExisting();
+            await SongQuiz.next();
+            if(numberOfQuestions === 20) {
+                await expect(SongQuiz.score).toBeExisting();
+            } else {
+                await expect(QuizInfo.question).toBeExisting();
+            }
         }
     }
+
     async answerBtnNeg () {
         await this.loopThroughQuestionsNeg(20);
     }

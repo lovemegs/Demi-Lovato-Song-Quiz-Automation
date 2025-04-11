@@ -1,4 +1,3 @@
-// import { expect } from '@wdio/globals'
 import QuizInfo from '../pageobjects/quizInfo.js';
 import SongQuiz from '../pageobjects/songQuiz.js';
 import SongQuizNeg from '../pageobjects/songQuizNeg.js';

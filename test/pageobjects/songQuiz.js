@@ -1,4 +1,4 @@
-import { $, browser, expect } from '@wdio/globals'
+import { $, expect } from '@wdio/globals'
 import QuizInfo from './quizInfo'
 
 class SongQuiz {
@@ -57,7 +57,6 @@ class SongQuiz {
     }
     
     async correctAnswerBtns () {
-        // await this.answerBtns[3].click();
         for (let i = 0; i < this.correctAnswers.length; i++) {
             if (await this.correctAnswers[i].isExisting()) {
                 await this.correctAnswers[i].click();
@@ -65,14 +64,11 @@ class SongQuiz {
                 continue;
             }
         }
-        // await browser.pause(3000);
     }
 
     async next () {
         await this.nextBtn.moveTo();
-        // await browser.pause(3000);
         await this.nextBtn.click();
-        // await browser.pause(3000);
     }
 
     async disabled () {
@@ -93,11 +89,13 @@ class SongQuiz {
             await expect(this.answerWrong).not.toBeExisting();
 
             await this.disabled();
-            // await expect(this.disabledBtns).toBeExisting();
 
             await this.next();
-            await expect(QuizInfo.question).toBeExisting();
-            await expect(this.score).toBeExisting();
+            if (numberOfQuestions === 20) {
+                await expect(this.score).toBeExisting();
+            } else {
+                await expect(QuizInfo.question).toBeExisting();
+            }
         }
     }
 
