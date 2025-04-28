@@ -1,65 +1,54 @@
 import { $, expect } from '@wdio/globals'
-import QuizInfo from './quizInfo'
+import Home from './home';
 
-class SongQuiz {
-    get answerBtns() {
-        return [
-            $('.btn:nth-child(1)'),
-            $('.btn:nth-child(2)'),
-            $('.btn:nth-child(3)'),
-            $('.btn:nth-child(4)'),
-        ];
+class SongQuiz extends Home {
+   
+    async correctAnswers (answer) {
+        return $(`//button[contains(text(), "${answer}")]`)
     }
-    get answerCorrect () {
-        return $('.correct')
-    }
-    get answerWrong () {
-        return $('.wrong')
-    }
-    get nextBtn () {
-        return $('.next-btn')
-    }
-    get disabledBtns () {
-        return $$('.disabled')
-    }
-    get score () {
-        return $('span.score')
-    }
-    get correctAnswers () {
-        return [
-            $('//button[contains(text(), "The Art Of Starting Over")]'),
-            $('//button[contains(text(), "My Love Is Like A Star")]'),
-            $('//button[contains(text(), "Don\'t Forget")]'),
-            $('//button[contains(text(), "I Love Me")]'),
-            $('//button[contains(text(), "2022")]'),
-            $('//button[contains(text(), "City Of Angels")]'),
-            $('//button[contains(text(), "2011")]'),
-            $('//button[contains(text(), "Unbroken")]'),
-            $('//button[contains(text(), "Help Me")]'),
-            $('//button[contains(text(), "29")]'),
-            $('//button[contains(text(), "Skyscraper")]'),
-            $('//button[contains(text(), "Sorry Not Sorry")]'),
-            $('//button[contains(text(), "Frozen")]'),
-            $('//button[contains(text(), "For The Love Of A Daughter")]'),
-            $('//button[contains(text(), "Tell Me You Love Me")]'),
-            $('//button[contains(text(), "3")]'),
-            $('//button[contains(text(), "Jason Derulo")]'),
-            $('//button[contains(text(), "World of Chances")]'),
-            $('//button[contains(text(), "9")]'),
-            $('//button[contains(text(), "Sober")]'),
-        ]
-    }
+    correctAnswerArray = [
+        "The Art Of Starting Over",
+        "My Love Is Like A Star",
+        "Don't Forget",
+        "I Love Me",
+        "2022",
+        "City Of Angels",
+        "2011",
+        "Unbroken",
+        "Help Me",
+        "29",
+        "Skyscraper",
+        "Sorry Not Sorry",
+        "Frozen",
+        "For The Love Of A Daughter",
+        "Tell Me You Love Me",
+        "3",
+        "Jason Derulo",
+        "World of Chances",
+        "9",
+        "Sober",
+    ]
 
     async hoverOverBtns () {
         for (let i = 0; i < this.answerBtns.length; i++) {
             await this.answerBtns[i].moveTo();
+
+            const hoverBgColor = await this.answerBtns[i].getCSSProperty('background-color');
+            await expect(hoverBgColor.value).toBe('rgba(187,163,236,1)');
         }
     }
     
     async correctAnswerBtns () {
-        for (let i = 0; i < this.correctAnswers.length; i++) {
-            if (await this.correctAnswers[i].isExisting()) {
-                await this.correctAnswers[i].click();
+        for (let i = 0; i < this.correctAnswerArray.length; i++) {
+            const answerText = this.correctAnswerArray[i];
+            const answerBtn = await this.correctAnswers(answerText);
+
+            if (await answerBtn.isExisting()) {
+                await answerBtn.click();
+
+                await expect(this.answerCorrect).toBeExisting();
+                await expect(this.answerCorrect).toHaveElementClass('correct')
+                await expect(this.answerWrong).not.toBeExisting();
             } else {
                 continue;
             }
@@ -68,13 +57,18 @@ class SongQuiz {
 
     async next () {
         await this.nextBtn.moveTo();
+
+        const nextBgColor = await this.nextBtn.getCSSProperty('background-color');
+        await expect(nextBgColor.value).toBe('rgba(102,51,153,1)');
+
         await this.nextBtn.click();
     }
 
     async disabled () {
         for (let i = 0; i < this.disabledBtns.length; i++) {
             await this.disabledBtns[i].click();
-            await expect(this.disabledBtns[i].toBeExisting());
+            await expect(this.disabledBtns[i]).toBeExisting();
+            await expect(this.disabledBtns[i]).toHaveAttribute('disabled');
         }
     }
 
@@ -85,16 +79,18 @@ class SongQuiz {
                 await expect(this.hoverOverBtns[i]).toBeClickable();
             }
             await this.correctAnswerBtns();
-            await expect(this.answerCorrect).toBeExisting();
-            await expect(this.answerWrong).not.toBeExisting();
-
+        
             await this.disabled();
 
             await this.next();
-            if (numberOfQuestions === 20) {
-                await expect(this.score).toBeExisting();
-            } else {
-                await expect(QuizInfo.question).toBeExisting();
+            this.currentQuestion += 1;
+            if (this.currentQuestion > 20) {
+                await expect(this.score).toBeDisplayed();
+                await expect(this.score).toHaveElementClass('score');
+            }
+            else {
+                await expect(this.question).toHaveHTML(expect.stringContaining(`${this.currentQuestion}`));
+                await expect(this.score).not.toBeDisplayed();
             }
         }
     }

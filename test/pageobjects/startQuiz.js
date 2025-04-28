@@ -1,21 +1,24 @@
-import { $ } from '@wdio/globals'
-import HomePage from './homePage.js';
-import QuizInfo from './quizInfo.js'
+import { expect } from '@wdio/globals'
+import Home from './home.js';
 
 
-class StartQuizPage extends HomePage {
-    get startBtn () {
-        return $('button#start-btn');
-    }
-
+class StartQuiz extends Home {
+  
     async start () {
         await this.startBtn.click();
-        await expect(QuizInfo.startQuizBtn).toBeExisting();
+        await expect(this.startQuizBtn).toBeExisting();
+        await expect(this.title).toHaveHTML('<h2>Quiz Info</h2>')
     }
 
-    open() {
-        return super.open()
+    async resetClick () {
+        await this.resetBtn.click();
+        await expect(this.startBtn).toBeExisting();
+        await expect(this.startBtn).toHaveElementClass('start-btn');
+    }
+
+    openURL() {
+        return super.openURL()
     }
 }
 
-export default new StartQuizPage();
+export default new StartQuiz();

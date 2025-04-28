@@ -1,41 +1,28 @@
-import { $, expect } from '@wdio/globals'
-import StartQuizPage from './startQuiz';
+import { expect } from '@wdio/globals'
+import StartQuiz from './startQuiz';
+import Home from './home';
 
 
-class QuizInfo {
-    get cancelBtn () {
-        return $('button.cancel-btn')
-    }
-    get startQuizBtn () {
-        return $('button.continue-btn')
-    }
-    get question () {
-        return $('.question')
-    }
-
-    async hoverState () {
+class QuizInfo extends Home {
+   
+    async quizInfoBtns () {
         await this.cancelBtn.moveTo();
         await this.startQuizBtn.moveTo();
-    }
-    async cancel () {
+        
+        const startBgColor = await this.startQuizBtn.getCSSProperty('background-color');
+        await expect(startBgColor.value).toBe('rgba(120,68,172,1)');
+        const cancelBgColor = await this.cancelBtn.getCSSProperty('background-color');
+        await expect(cancelBgColor.value).toBe('rgba(239,239,239,1)');
+
         await this.cancelBtn.click();
-    }
-    async startQuiz () {
+        await expect(this.startBtn).toBeExisting();
+        await expect(this.startBtn).toHaveElementClass('start-btn');
+
+        await StartQuiz.start();
+
         await this.startQuizBtn.click();
-    }
-
-    async quizInfoBtns () {
-        await this.hoverState();
-        await expect(this.cancelBtn).toBeClickable();
-        await expect(this.startQuizBtn).toBeClickable();
-
-        await this.cancel();
-        await expect(StartQuizPage.startBtn).toBeExisting();
-
-        await StartQuizPage.start();
-
-        await this.startQuiz();
         await expect(this.question).toBeExisting();
+        await expect(this.question).toHaveHTML(expect.stringContaining('1.'))
     }
 }
 
